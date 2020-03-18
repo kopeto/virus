@@ -1,8 +1,6 @@
 # virus spread naive simulation
 
 ![GitHub Logo](/image.jpg)
-Format: ![Alt Text](https://raw.githubusercontent.com/kopeto/virus/master/image.jpg)
-
 
 ## Installation
 Install Boost-random1.65:
