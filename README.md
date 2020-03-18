@@ -1,5 +1,7 @@
 # virus spread naive simulation
 
+![alt text](https://raw.githubusercontent.com/kopeto/virus/image.jpg)
+
 ## Installation
 Install Boost-random1.65:
 ```bash
