@@ -10,6 +10,8 @@ BOOST_LIBS = -lboost_random
 
 OBJECTSDIR += obj/
 
+SRCDIR += src/
+
 OBJECTS += $(OBJECTSDIR)Sim.o
 OBJECTS += $(OBJECTSDIR)random_generator.o
 OBJECTS += $(OBJECTSDIR)OnInit.o
@@ -28,7 +30,7 @@ all:	virus
 virus:	$(OBJECTS)
 	$(CXX) -o $@ $^ $(SDL_LIBS) $(BOOST_LIBS)
 
-$(OBJECTSDIR)%.o:	$(PROJECT_ROOT)%.cpp
+$(OBJECTSDIR)%.o:	$(PROJECT_ROOT)$(SRCDIR)%.cpp
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(SDL_INCLUDES) $(BOOST_LIBS) -o $@ $<
 
 # %.o:	$(PROJECT_ROOT)%.c
