@@ -1,4 +1,4 @@
-# virus
+# virus spread naive simulation
 
 ## Installation
 Install Boost-random1.65:
@@ -25,4 +25,3 @@ Run
 ```bash
 ./virus initial-values
 ```
-
