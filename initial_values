@@ -1,0 +1,10 @@
+MAX_COL 1000
+MAX_ROW 1000
+infection_P   0.1
+die_P   0.001
+INITIAL_INFECTED   300
+DAYS   150
+IMMUNITY 0.05
+CreatePNGSequence 1
+CreateMP4Video 1
+#DisplayInConsole 0
