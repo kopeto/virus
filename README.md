@@ -3,9 +3,16 @@
 ![GitHub Logo](/image.jpg)
 
 ## Installation
-Install Boost-random1.65:
+
+Install last build tools:
 ```bash
-sudo apt-get install libboost-random1.65-dev
+sudo apt-get update
+sudo apt-get install build-essential
+```
+
+Install Boost-random:
+```bash
+sudo apt-get install libboost-random-dev
 ```
 
 Install SDL2:
@@ -23,7 +30,12 @@ Build:
 make
 ```
 
-Run
+## Run
+You can configure virus propagation intial values in a file:
 ```bash
 ./virus initial-values
+```
+Or simulate with default values:
+```bash
+./virus 
 ```
