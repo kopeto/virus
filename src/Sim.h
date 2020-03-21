@@ -37,21 +37,27 @@ public:
   int POPULATION;
   double infection_P;
   int SAMPLE_RATE;
-
   double die_P;
+  double heal_P;
+  int recovery_days;
   int INITIAL_INFECTED;
   int DAYS;
   double IMMUNITY;
+  int until_end;
 
 
-  char* infection_MASK;
-  char* infected;
-  char* dead;
-  char* immune;
+  unsigned char* infection_MASK;
+  unsigned char* infected;
+  unsigned char* dead;
+  unsigned char* immune;
+  int* days_infected;
+  int** data_state;
 
   int infections;
   int old_infections;
+  int new_infected_today;
   int deads;
+  int immunes;
   int day;
   RandomGen gen;
 

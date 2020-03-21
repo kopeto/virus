@@ -23,7 +23,7 @@ OBJECTS += $(OBJECTSDIR)OnLoop.o
 OBJECTS += $(OBJECTSDIR)OnCleanup.o
 OBJECTS += $(OBJECTSDIR)OnExecute.o
 
-CFLAGS += -std=c++17
+CFLAGS += -O3 -std=c++17
 
 all:	virus
 

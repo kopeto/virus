@@ -12,7 +12,7 @@ int Sim::OnExecute() {
 
     SDL_Event Event;
 
-    for(day=0; day<=DAYS && Running; day++)
+    for(day=0; (day<=DAYS || until_end) && Running; day++)
     {
         while(SDL_PollEvent(&Event)) {
             OnEvent(&Event);
@@ -24,7 +24,6 @@ int Sim::OnExecute() {
               OnEvent(&Event);
           }
         }
-        old_infections = infections;
     }
 
     if(CreatePNGSequence && CreateMP4Video && Running)

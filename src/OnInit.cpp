@@ -37,26 +37,43 @@ bool Sim::OnInit() {
     }
     SDL_SetWindowTitle(MainWindow, "VIRUS SIM");
 
+    // Initial IMMUNES and shuffle them:
+    for(int i=0;i<POPULATION*IMMUNITY;i++)
+    {
+      immune[i]=1;
+      immunes++;
+    }
+    std::shuffle (&immune[0], &immune[POPULATION-1], std::default_random_engine(gen.get_device_random(0,0xFFFFFF)));
+
     // INITIAL INFECTATION
+    if(INITIAL_INFECTED>POPULATION)
+      INITIAL_INFECTED = POPULATION;
     for(int i=0; infections<INITIAL_INFECTED; i++){
       int target = gen.get_device_random(0,POPULATION-1);
-      if(!infected[target]){
+      if(!immune[target] && !infected[target]){
         infected[target]=true;
         infections++;
-        //infected_vector.push_back(target);
+        days_infected[target]=0;
       }
     }
     old_infections=infections;
 
-    char x10[1024];
-    sprintf(x10,"(x10)");
-    SDL_Surface* srf_msgX10 = TTF_RenderText_Solid(MainFont, x10, BLUE);
-    SDL_Texture* msgX10 = SDL_CreateTextureFromSurface(MainRenderer, srf_msgX10);
-    int w,h;
-    TTF_SizeText(MainFont, x10,&w,&h);
-    SDL_Rect rect{MAX_COL,MAX_ROW-GRAPHH,w,h};
-    SDL_RenderCopy(MainRenderer, msgX10, NULL, &rect);
-    SDL_DestroyTexture(msgX10);
-    SDL_FreeSurface(srf_msgX10);
+    // Init data state
+    // [infected][immune][dead]
+    data_state[day][0]=infections;
+    data_state[day][1]=immunes;
+    data_state[day][2]=deads;
+
+    // x10 in the graph
+    // char x10[1024];
+    // sprintf(x10,"(x10)");
+    // SDL_Surface* srf_msgX10 = TTF_RenderText_Solid(MainFont, x10, BLUE);
+    // SDL_Texture* msgX10 = SDL_CreateTextureFromSurface(MainRenderer, srf_msgX10);
+    // int w,h;
+    // TTF_SizeText(MainFont, x10,&w,&h);
+    // SDL_Rect rect{MAX_COL,MAX_ROW-GRAPHH,w,h};
+    // SDL_RenderCopy(MainRenderer, msgX10, NULL, &rect);
+    // SDL_DestroyTexture(msgX10);
+    // SDL_FreeSurface(srf_msgX10);
     return true;
 }

@@ -12,6 +12,8 @@ Sim::Sim()
   SAMPLE_RATE = 1;
 
   die_P = 0.01f;
+  heal_P = 0.0f;
+  recovery_days = 15;
   INITIAL_INFECTED = 100;
   DAYS = 100;
   IMMUNITY = 0.0f;
@@ -19,21 +21,33 @@ Sim::Sim()
   DisplayInConsole = 0;
   CreatePNGSequence = 0;
   CreateMP4Video = 0;
+  until_end = 1;
 
-  infection_MASK = new char[POPULATION];
-  infected = new char[POPULATION];
-  dead = new char[POPULATION];
-  immune = new char[POPULATION];
+  infection_MASK = new unsigned char[POPULATION];
+  infected = new unsigned char[POPULATION];
+  dead = new unsigned char[POPULATION];
+  immune = new unsigned char[POPULATION];
+  days_infected = new int[POPULATION];
 
   for(int i=0;i<POPULATION;i++)
   {
     immune[i]=0;
+    days_infected[i]=-1;
   }
+
+  data_state = new int*[DAYS];
+  for(int d=0; d<DAYS+1; d++)
+  {
+    data_state[d]=new int[3];
+  }
+
 
   day = 0;
   infections=0;
   old_infections=0;
+  new_infected_today = 0;
   deads=0;
+  immunes = 0;
 
   //RandomGen gen;
   MainWindow = NULL;
@@ -50,7 +64,8 @@ Sim::Sim(const char * filename)
 
   infection_P = 0.1f;
   SAMPLE_RATE = 1;
-
+  heal_P = 0.0f;
+  recovery_days = 15;
   die_P = 0.01f;
   INITIAL_INFECTED = 100;
   DAYS = 100;
@@ -59,6 +74,7 @@ Sim::Sim(const char * filename)
   DisplayInConsole = 0;
   CreatePNGSequence = 0;
   CreateMP4Video = 0;
+  until_end = 1;
 
   std::string line;
   std::ifstream data(filename);
@@ -128,6 +144,21 @@ Sim::Sim(const char * filename)
         std::string s; stream >> s;
         CreateMP4Video = stoi(s);
       }
+      else if(option == "recovery_days")
+      {
+        std::string s; stream >> s;
+        recovery_days = stoi(s);
+      }
+      else if(option == "heal_P")
+      {
+        std::string s; stream >> s;
+        heal_P = stod(s);
+      }
+      else if(option == "until_end")
+      {
+        std::string s; stream >> s;
+        until_end = stoi(s);
+      }
       else
       {
         std::cout<<"Option \""<<option<<"\" not recognized.\n";
@@ -138,21 +169,31 @@ Sim::Sim(const char * filename)
 
   POPULATION = MAX_ROW * MAX_COL;
 
-  infection_MASK = new char[POPULATION];
-  infected = new char[POPULATION];
-  dead = new char[POPULATION];
-  immune = new char[POPULATION];
+  infection_MASK = new unsigned char[POPULATION];
+  infected = new unsigned char[POPULATION];
+  dead = new unsigned char[POPULATION];
+  immune = new unsigned char[POPULATION];
+  days_infected = new int[POPULATION];
 
-  for(int i=0;i<POPULATION*IMMUNITY;i++)
+
+
+  for(int i=0; i<POPULATION; i++)
   {
-    immune[i]=1;
+    days_infected[i]=-1;
   }
-  std::shuffle (&immune[0], &immune[POPULATION-1], std::default_random_engine(gen.get_device_random(0,0xFFFFFF)));
 
+  data_state = new int*[DAYS];
+  for(int d=0; d<DAYS+1; d++)
+  {
+    data_state[d]=new int[3];
+  }
+
+  day = 0;
   infections=0;
   old_infections=0;
-  deads = 0;
-  day = 0;
+  new_infected_today = 0;
+  deads=0;
+  immunes = 0;
 
   //RandomGen gen;
   MainWindow = NULL;
@@ -177,71 +218,79 @@ void Sim::infect_around(int id,RandomGen& gen)
 
   if(row!=0)
   {
-    if(!infected[(row-1)*MAX_COL+col] && !infection_MASK[(row-1)*MAX_COL+col] && !immune[(row-1)*MAX_COL+col])
+    int id = (row-1)*MAX_COL+col;
+    if(!infected[id] && !infection_MASK[id] && !immune[id] && !dead[id])
     {
-      infection_MASK[(row-1)*MAX_COL+col]=infect(gen,infection_P);
-      infections += (int)infection_MASK[(row-1)*MAX_COL+col];
+      infection_MASK[id]=infect(gen,infection_P);
+      //infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
     }
 
     if(col!=0)
     {
-      if(!infected[(row-1)*MAX_COL+col-1] && !infection_MASK[(row-1)*MAX_COL+col-1] && !immune[(row-1)*MAX_COL+col-1])
+      int id = (row-1)*MAX_COL+col-1;
+      if(!infected[id] && !infection_MASK[id] && !immune[id] && !dead[id])
       {
-        infection_MASK[(row-1)*MAX_COL+col-1]=infect(gen,infection_P);
-        infections += (int)infection_MASK[(row-1)*MAX_COL+col-1];
+        infection_MASK[id]=infect(gen,infection_P);
+        //infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
       }
     }
     if(col<MAX_COL-1)
     {
-      if(!infected[(row-1)*MAX_COL+col+1] && !infection_MASK[(row-1)*MAX_COL+col+1] && ! immune[(row-1)*MAX_COL+col+1])
+      int id = (row-1)*MAX_COL+col+1;
+      if(!infected[id] && !infection_MASK[id] && !immune[id] && !dead[id])
       {
-        infection_MASK[(row-1)*MAX_COL+col+1]=infect(gen,infection_P);
-        infections+=infection_MASK[(row-1)*MAX_COL+col+1];
+        infection_MASK[id]=infect(gen,infection_P);
+        //infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
       }
     }
   }
 
   if(row!=MAX_ROW-1)
   {
-    if(!infected[(row+1)*MAX_COL+col] && !infection_MASK[(row+1)*MAX_COL+col] && !immune[(row+1)*MAX_COL+col])
+    int id = (row+1)*MAX_COL+col;
+    if(!infected[id] && !infection_MASK[id] && !immune[id] && !dead[id])
     {
-      infection_MASK[(row+1)*MAX_COL+col]=infect(gen,infection_P);
-      infections+=(int)infection_MASK[(row+1)*MAX_COL+col];
+      infection_MASK[id]=infect(gen,infection_P);
+      //infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
     }
 
     if(col!=0)
     {
-      if(!infected[(row+1)*MAX_COL+col-1] && !infection_MASK[(row+1)*MAX_COL+col-1] && !immune[(row+1)*MAX_COL+col-1])
+      int id = (row+1)*MAX_COL+col-1;
+      if(!infected[id] && !infection_MASK[id] && !immune[id] && !dead[id])
       {
-        infection_MASK[(row+1)*MAX_COL+col-1]=infect(gen,infection_P);
-        infections+=(int)infection_MASK[(row+1)*MAX_COL+col-1];
+        infection_MASK[id]=infect(gen,infection_P);
+        //infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
       }
     }
     if(col<MAX_COL-1)
     {
-      if(!infected[(row+1)*MAX_COL+col+1] && !infection_MASK[(row+1)*MAX_COL+col+1] && !immune[(row+1)*MAX_COL+col+1])
+      int id = (row+1)*MAX_COL+col+1;
+      if(!infected[id] && !infection_MASK[id] && !immune[id] && !dead[id])
       {
-        infection_MASK[(row+1)*MAX_COL+col+1]=infect(gen,infection_P);
-        infections+=(int)infection_MASK[(row+1)*MAX_COL+col+1];
+        infection_MASK[id]=infect(gen,infection_P);
+        //infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
       }
     }
   }
 
   if(col!=0)
   {
-    if(!infected[(row)*MAX_COL+col-1] && !infection_MASK[(row)*MAX_COL+col-1] && !immune[(row)*MAX_COL+col-1])
+    int id = (row)*MAX_COL+col-1;
+    if(!infected[id] && !infection_MASK[id] && !immune[id] && !dead[id])
     {
-      infection_MASK[(row)*MAX_COL+col-1]=infect(gen,infection_P);
-      infections+=(int)infection_MASK[(row)*MAX_COL+col-1];
+      infection_MASK[id]=infect(gen,infection_P);
+      //infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
     }
   }
 
   if(col<MAX_COL-1)
   {
-    if(!infected[(row)*MAX_COL+col+1] && !infection_MASK[(row)*MAX_COL+col+1] && !immune[(row)*MAX_COL+col+1])
+    int id = (row)*MAX_COL+col+1;
+    if(!infected[id] && !infection_MASK[id] && !immune[id] && !dead[id])
     {
-      infection_MASK[(row)*MAX_COL+col+1]=infect(gen,infection_P);
-      infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
+      infection_MASK[id]=infect(gen,infection_P);
+      //infections+=(int)infection_MASK[(row)*MAX_COL+col+1];
     }
   }
 }
@@ -271,5 +320,5 @@ void Sim::RenderMP4Video()
   // ffmpeg -loop 3 -r 20 -i img/sequences/%03d.png -c:v libx264 -vf "fps=25,format=yuv420p,scale=800:-1" out_loop3.mp4
   char command[1024];
   sprintf(command,"ffmpeg -r 30 -i img/sequences/%%03d.png -c:v libx264 -vf \"fps=25,format=yuv420p\" -y video/out%ddays.mp4",DAYS);
-  std::system(command);
+  int ret = std::system(command);
 }

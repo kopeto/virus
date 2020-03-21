@@ -5,32 +5,31 @@ void Sim::OnLoop() {
   //*****************************************
   // MAIN LOOP
   //****************************************
-
-
-  //
-  // for(const auto &id: infected_vector)
-  // {
-  //   infect_around(id,gen);
-  //   if(!dead[id])
-  //   {
-  //     dead[id]=kill(gen,die_P);
-  //     deads += dead[id];
-  //   }
-  // }
-
-  // Randomiz positions
-  // obtain a time-based seed:
-  // unsigned seed = gen.get_device_random(0,0xFFFFFF);
-  // std::shuffle (&infected[0], &infected[POPULATION-1], std::default_random_engine(seed));
+  new_infected_today = 0;
   for(int id = 0; id<POPULATION; id++)
   {
     if(infected[id])
     {
+      if(++days_infected[id]>=15)
+      {
+        immune[id]=1;
+        immunes++;
+        infected[id]=0;
+        infections--;
+      }
+    }
+    if(!immune[id] && infected[id])
+    {
       infect_around(id,gen);
       if(!dead[id])
       {
-        dead[id]=kill(gen,die_P);
-        deads += dead[id];
+        if(kill(gen,die_P))
+        {
+          dead[id]=1;
+          deads++;
+          infected[id]=0;
+          infections--;
+        }
       }
     }
   }
@@ -41,10 +40,11 @@ void Sim::OnLoop() {
     if(infection_MASK[id])
     {
       infected[id]=infection_MASK[id];
+      days_infected[id]=0;
+      infections++;
       infection_MASK[id]=false;
-      //infected_vector.push_back(id);
+      new_infected_today++;
     }
-
   }
 
   // Show intermediate results
@@ -53,10 +53,13 @@ void Sim::OnLoop() {
     display_results();
   }
 
-  // Break if all infected
-  if(infections == POPULATION)
-  {
-    std::cout<<"All infected in "<<day<<" days(P="<<infection_P<<")\n";
-    //Running = false;
-  }
+  //old_infections = infections;
+
+  data_state[day][0]=infections;
+  data_state[day][1]=immunes;
+  data_state[day][2]=deads;
+
+  std::cout<<data_state[day][0]<<":"
+    <<data_state[day][1]<<":"
+    <<data_state[day][2]<<'\n';
 }
