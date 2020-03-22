@@ -325,11 +325,16 @@ void Sim::save_texture(SDL_Texture *texture, const char *filename) {
 
 void Sim::RenderMP4Video()
 {
-  // example command
-  // ffmpeg -loop 3 -r 20 -i img/sequences/%03d.png -c:v libx264 -vf "fps=25,format=yuv420p,scale=800:-1" out_loop3.mp4
-  char command[1024];
-  sprintf(command,"ffmpeg -r 30 -i img/sequences/%%03d.png -c:v libx264 -vf \"fps=25,format=yuv420p\" -y video/out%ddays.mp4",DAYS);
-  int ret = std::system(command);
+  char create_mp4_command[256];
+  sprintf(create_mp4_command,"ffmpeg -r 30 -i img/sequences/%%03d.png -c:v libx264 -vf \"fps=25,format=yuv420p\" -y video/out%ddays.mp4",DAYS);
+  int ret = std::system(create_mp4_command);
+}
+
+void Sim::RenderGif()
+{
+  char create_gif_command[256];
+  sprintf(create_gif_command,"ffmpeg -r 30 -i img/sequences/%%03d.png -vf \"fps=25,format=yuv420p\" -y video/out%ddays.gif",DAYS);
+  int ret = std::system(create_gif_command);
 }
 
 void Sim::PrintReport()
@@ -339,18 +344,32 @@ void Sim::PrintReport()
   log_outfile <<  "================================\n";
   log_outfile <<  "   VIRUS SIMULATION LOG FILE    \n";
   log_outfile <<  "================================\n\n";
+
+  char totalcases[256];
+  sprintf(totalcases,
+    "Total cases: %7d\n",
+    total_cases);
+  log_outfile << totalcases;
+
   char maxInfected[256];
   sprintf(maxInfected,
-    "Max Infected: %7d Day %d\n",
+    "Max Infected at once: %7d Day %d\n",
     max_infected, max_infected_day);
   log_outfile << maxInfected;
+
+  char deathRate[256];
+  sprintf(deathRate,
+    "Death rate: %%%2.2f\n",
+    (double)deads/total_cases*100);
+  log_outfile << deathRate;
+
   if(zero_infected_day!=-1)
   {
-      char zeroInfected[256];
-      sprintf(zeroInfected,
-        "All healthy in day: %d\n\n",
-        zero_infected_day);
-      log_outfile << zeroInfected;
+    char zeroInfected[256];
+    sprintf(zeroInfected,
+      "All healthy in day: %d\n\n",
+      zero_infected_day);
+    log_outfile << zeroInfected;
   }
   else
   {

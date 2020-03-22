@@ -82,6 +82,7 @@ public:
 
   void save_texture(SDL_Texture *tex, const char *filename);
   void RenderMP4Video();
+  void RenderGif();
   void PrintReport();
 
 public:

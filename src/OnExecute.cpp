@@ -29,6 +29,7 @@ int Sim::OnExecute() {
     if(CreatePNGSequence && CreateMP4Video && Running)
     {
       RenderMP4Video();
+      RenderGif();
       Running=0;
     }
 
