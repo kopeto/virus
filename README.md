@@ -1,6 +1,11 @@
 # virus spread naive simulation
 
-![Logo](logo.gif)
+<!-- ![](logo.gif) -->
+<p align="center">
+  <img src="logo_1.gif" width="400">
+  <br/>
+  <img src="logo_2.gif" width="400">
+</p>
 
 ## Description
 Naive simulation of a virus spreading.

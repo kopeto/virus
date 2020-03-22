@@ -1,6 +1,6 @@
 MAX_COL 1000
 MAX_ROW 1000
-infection_P   0.2
+infection_P   0.5
 die_P   0.01
 INITIAL_INFECTED   1000
 DAYS  120
