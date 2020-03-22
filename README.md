@@ -4,8 +4,10 @@
 
 ![GitHub Logo](/image_2.jpg)
 
-## Installation
+## Description
+Naive simulation of a virus spreading.
 
+## Installation
 Install last build tools:
 ```bash
 sudo apt-get update
@@ -43,3 +45,5 @@ Or simulate with default values:
 ```
 
 After running the simulation a log file will be created in the current directory with the relevant data.
+
+If the simulation terminated successfully, a mp4 video file will be created in video folder.
