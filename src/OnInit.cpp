@@ -54,9 +54,12 @@ bool Sim::OnInit() {
         infected[target]=true;
         infections++;
         days_infected[target]=0;
+        total_cases++;
       }
     }
-    old_infections=infections;
+    //old_infections=infections;
+    max_infected = infections;
+    max_infected_day = 0;
 
     // Init data state
     // [infected][immune][dead]

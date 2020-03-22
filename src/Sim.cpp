@@ -35,7 +35,7 @@ Sim::Sim()
     days_infected[i]=-1;
   }
 
-  data_state = new int*[DAYS];
+  data_state = new int*[DAYS+1];
   for(int d=0; d<DAYS+1; d++)
   {
     data_state[d]=new int[3];
@@ -48,8 +48,12 @@ Sim::Sim()
   new_infected_today = 0;
   deads=0;
   immunes = 0;
+  max_infected = 0;
+  max_infected_day = 0;
+  total_cases = 0;
+  zero_infected_day = -1;
+  all_healthy = 0;
 
-  //RandomGen gen;
   MainWindow = NULL;
   MainRenderer = NULL;
   MainFont = NULL;
@@ -182,7 +186,7 @@ Sim::Sim(const char * filename)
     days_infected[i]=-1;
   }
 
-  data_state = new int*[DAYS];
+  data_state = new int*[DAYS+1];
   for(int d=0; d<DAYS+1; d++)
   {
     data_state[d]=new int[3];
@@ -194,6 +198,11 @@ Sim::Sim(const char * filename)
   new_infected_today = 0;
   deads=0;
   immunes = 0;
+  max_infected = 0;
+  max_infected_day = 0;
+  total_cases = 0;
+  zero_infected_day = -1;
+  all_healthy = 0;
 
   //RandomGen gen;
   MainWindow = NULL;
@@ -321,4 +330,42 @@ void Sim::RenderMP4Video()
   char command[1024];
   sprintf(command,"ffmpeg -r 30 -i img/sequences/%%03d.png -c:v libx264 -vf \"fps=25,format=yuv420p\" -y video/out%ddays.mp4",DAYS);
   int ret = std::system(command);
+}
+
+void Sim::PrintReport()
+{
+  std::ofstream log_outfile;
+  log_outfile.open ("last_simulation.log");
+  log_outfile <<  "================================\n";
+  log_outfile <<  "   VIRUS SIMULATION LOG FILE    \n";
+  log_outfile <<  "================================\n\n";
+  char maxInfected[256];
+  sprintf(maxInfected,
+    "Max Infected: %7d Day %d\n",
+    max_infected, max_infected_day);
+  log_outfile << maxInfected;
+  if(zero_infected_day!=-1)
+  {
+      char zeroInfected[256];
+      sprintf(zeroInfected,
+        "All healthy in day: %d\n\n",
+        zero_infected_day);
+      log_outfile << zeroInfected;
+  }
+  else
+  {
+    log_outfile << '\n';
+  }
+  char header[1024];
+  sprintf(header, " Day  Healthy  Infected    Dead\n");
+  log_outfile << header;
+  for(int day=0; day<=DAYS; day++)
+  {
+    char line[1024];
+    sprintf(line, " %3d  %7d  %8d %7d\n",
+    day,POPULATION-data_state[day][0]-data_state[day][2],
+    data_state[day][0],data_state[day][2]);
+    log_outfile << line;
+  }
+  log_outfile.close();
 }

@@ -1,15 +1,15 @@
 MAX_COL 1000
 MAX_ROW 1000
-infection_P   0.1
+infection_P   0.2
 die_P   0.01
-INITIAL_INFECTED   5000
-DAYS  300
-IMMUNITY 0.50
+INITIAL_INFECTED   1000
+DAYS  120
+IMMUNITY 0.10
 
 # until_end not working yet
 until_end 0
 
-recovery_days 30
+recovery_days 15
 heal_P 0.01
 
 CreatePNGSequence 1

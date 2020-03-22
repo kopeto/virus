@@ -44,6 +44,7 @@ void Sim::OnLoop() {
       infections++;
       infection_MASK[id]=false;
       new_infected_today++;
+      total_cases++;
     }
   }
 
@@ -53,13 +54,26 @@ void Sim::OnLoop() {
     display_results();
   }
 
-  //old_infections = infections;
+  //UPDATE max infected:
+  if(max_infected<infections)
+  {
+    max_infected=infections;
+    max_infected_day=day;
+  }
 
   data_state[day][0]=infections;
   data_state[day][1]=immunes;
   data_state[day][2]=deads;
 
-  std::cout<<data_state[day][0]<<":"
-    <<data_state[day][1]<<":"
-    <<data_state[day][2]<<'\n';
+  if(!all_healthy)
+  {
+    if (infections==0) {
+      zero_infected_day=day;
+      all_healthy = 1;
+    }
+  }
+
+  // std::cout<<data_state[day][0]<<":"
+  //   <<data_state[day][1]<<":"
+  //   <<data_state[day][2]<<'\n';
 }

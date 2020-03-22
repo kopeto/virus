@@ -59,6 +59,11 @@ public:
   int deads;
   int immunes;
   int day;
+  int max_infected;
+  int max_infected_day;
+  int total_cases;
+  int zero_infected_day;
+  int all_healthy;
   RandomGen gen;
 
   SDL_Window* MainWindow;
@@ -77,6 +82,7 @@ public:
 
   void save_texture(SDL_Texture *tex, const char *filename);
   void RenderMP4Video();
+  void PrintReport();
 
 public:
   bool OnInit();
