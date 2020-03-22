@@ -22,7 +22,7 @@ until_end 0
 
 # A person will be recovered and immune if lasts those days
 # infected and alive
-recovery_days 30
+recovery_days 45
 
 # not working yet
 heal_P 0.01

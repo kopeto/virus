@@ -10,7 +10,7 @@ void Sim::OnLoop() {
   {
     if(infected[id])
     {
-      if(++days_infected[id]>=15)
+      if(++days_infected[id]>=recovery_days)
       {
         immune[id]=1;
         immunes++;
