@@ -10,7 +10,7 @@ void Sim::OnCleanup() {
   delete[] immune;
   delete[] data_state;
   delete[] days_infected;
-  
+
   if(MainRenderer)
   SDL_DestroyRenderer(MainRenderer);
   if(MainWindow)

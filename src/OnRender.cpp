@@ -28,26 +28,15 @@ void Sim::OnRender() {
 
   if(CreatePNGSequence)
   {
-    SDL_Texture*  texture = SDL_CreateTexture(MainRenderer,
-                               SDL_PIXELFORMAT_RGBA32,
-                               0,
-                               MAX_COL+GRAPHW,
-                               MAX_ROW);
-    char filename[1024];
+    char filename[256];
     sprintf(filename,"img/sequences/%03d.png",day);
-    save_texture(texture,filename);
+    SDL_Surface* surface = SDL_CreateRGBSurface(0, MAX_COL+GRAPHW, MAX_ROW, 32, 0, 0, 0, 0);
+    SDL_RenderReadPixels(MainRenderer, NULL, surface->format->format, surface->pixels, surface->pitch);
+    Surface_to_PNG(surface,filename);
+    Texture_Vector.push_back(SDL_CreateTextureFromSurface(MainRenderer, surface));
+    SDL_FreeSurface(surface);
   }
-  if(day==DAYS)
-  {
-    SDL_Texture*  texture = SDL_CreateTexture(MainRenderer,
-                               SDL_PIXELFORMAT_RGBA32,
-                               0,
-                               MAX_COL+GRAPHW,
-                               MAX_ROW);
-    char filename[1024];
-    sprintf(filename,"img/virus_%ddays_P%.3f_Immune%.2f_init%d.png",DAYS,infection_P,IMMUNITY,INITIAL_INFECTED);
-    save_texture(texture,filename);
-  }
+
 }
 
 void Sim::RenderInfo()
@@ -158,7 +147,7 @@ void Sim::RenderGraph()
       MAX_ROW-(int)((double)deads/POPULATION*GRAPHH),//y
       (int)(GRAPHW/DAYS)+1,//w
       (int)((double)deads/POPULATION*GRAPHH) -1//h
-    };
+  };
 
 
   // INFECTIONS
@@ -199,4 +188,11 @@ void Sim::RenderGraph()
   SDL_Rect GRAPH_DELIMITER{MAX_COL,MAX_ROW-GRAPHH,GRAPHW,GRAPHH};
   SDL_RenderDrawRect(MainRenderer,&GRAPH_DELIMITER);
 
+}
+
+void Sim::RenderDay()
+{
+  // Render Texture_vector[Simulation_Current_Frame];
+  SDL_RenderCopy(MainRenderer,Texture_Vector[Simulation_Current_Frame],NULL,NULL);
+  SDL_RenderPresent(MainRenderer);
 }

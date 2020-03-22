@@ -24,11 +24,24 @@ void Sim::OnRButtonDown(int mX, int mY) {
 void Sim::OnKeyDown(SDL_Keycode sym, Uint16 mod, Uint16 unicode) {
     switch(sym) {
         case SDLK_LEFT: {
-            break;
+          if(SimulationEnd)
+          {
+            Simulation_Current_Frame--;
+            if(Simulation_Current_Frame<0)
+              Simulation_Current_Frame=0;
+            RenderDay();
+          }
+          break;
         }
-
         case SDLK_RIGHT: {
-            break;
+          if(SimulationEnd)
+          {
+            Simulation_Current_Frame++;
+            if(Simulation_Current_Frame>DAYS-1)
+              Simulation_Current_Frame = DAYS-1;
+            RenderDay();
+          }
+          break;
         }
 
         case SDLK_UP: {
@@ -96,4 +109,20 @@ void Sim::OnKeyUp(SDL_Keycode sym, Uint16 mod, Uint16 unicode) {
 }
 
 void Sim::OnMouseWheel(bool Up, bool Down) {
+  if(SimulationEnd)
+  {
+    if(Up)
+    {
+      Simulation_Current_Frame++;
+    }
+    else
+    {
+      Simulation_Current_Frame--;
+    }
+    if(Simulation_Current_Frame<0)
+      Simulation_Current_Frame=0;
+    if(Simulation_Current_Frame>DAYS-1)
+      Simulation_Current_Frame = DAYS-1;
+    RenderDay();
+  }
 }

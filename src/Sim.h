@@ -46,45 +46,50 @@ public:
   double IMMUNITY;
   int until_end;
 
+  unsigned char* infection_MASK = NULL;
+  unsigned char* infected = NULL;
+  unsigned char* dead = NULL ;
+  unsigned char* immune = NULL;
+  int* days_infected = NULL;
+  int** data_state = NULL;
 
-  unsigned char* infection_MASK;
-  unsigned char* infected;
-  unsigned char* dead;
-  unsigned char* immune;
-  int* days_infected;
-  int** data_state;
-
-  int infections;
-  int old_infections;
-  int new_infected_today;
-  int deads;
-  int immunes;
-  int day;
-  int max_infected;
-  int max_infected_day;
-  int total_cases;
-  int zero_infected_day;
-  int all_healthy;
+  int infections = 0;
+  int old_infections = 0;
+  int new_infected_today = 0;
+  int deads = 0;
+  int immunes = 0;
+  int day = 0;
+  int max_infected = 0;
+  int max_infected_day = 0;
+  int total_cases = 0;
+  int zero_infected_day =-1;
+  int all_healthy = 0;
   RandomGen gen;
 
-  SDL_Window* MainWindow;
-  SDL_Renderer* MainRenderer;
-  TTF_Font* MainFont;
+  SDL_Window* MainWindow = NULL;
+  SDL_Renderer* MainRenderer = NULL;
+  TTF_Font* MainFont = NULL;
 
-  bool Running;
-  bool Pause;
-  bool DisplayInConsole;
-  bool CreatePNGSequence;
-  bool CreateMP4Video;
+  //std::vector<SDL_Surface*> Surface_Vector;
+  std::vector<SDL_Texture*> Texture_Vector;
+  bool SimulationEnd = false;
+  int Simulation_Current_Frame=0;
+
+  bool Running = true;
+  bool Pause = false;
+  bool DisplayInConsole = 0;
+  bool CreatePNGSequence = 1;
+  bool CreateMP4Video = 1;
 
   bool infect(RandomGen& gen, double prob);
   void infect_around(int id, RandomGen& gen);
   bool kill(RandomGen& gen, double prob);
 
-  void save_texture(SDL_Texture *tex, const char *filename);
+  void Surface_to_PNG(SDL_Surface* surface, const char *filename);
   void CleanPNGs();
   void RenderMP4Video();
   void RenderGif();
+  void RenderDay();
   void PrintReport();
 
 public:

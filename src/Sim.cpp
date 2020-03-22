@@ -10,18 +10,13 @@ Sim::Sim()
   POPULATION = MAX_ROW * MAX_COL;
   infection_P = 0.1f;
   SAMPLE_RATE = 1;
-
   die_P = 0.01f;
   heal_P = 0.0f;
   recovery_days = 15;
   INITIAL_INFECTED = 100;
   DAYS = 100;
   IMMUNITY = 0.0f;
-
-  DisplayInConsole = 0;
-  CreatePNGSequence = 0;
-  CreateMP4Video = 0;
-  until_end = 1;
+  until_end = 0;
 
   infection_MASK = new unsigned char[POPULATION];
   infected = new unsigned char[POPULATION];
@@ -41,44 +36,26 @@ Sim::Sim()
     data_state[d]=new int[3];
   }
 
-
-  day = 0;
-  infections=0;
-  old_infections=0;
-  new_infected_today = 0;
-  deads=0;
-  immunes = 0;
-  max_infected = 0;
-  max_infected_day = 0;
-  total_cases = 0;
-  zero_infected_day = -1;
-  all_healthy = 0;
-
-  MainWindow = NULL;
-  MainRenderer = NULL;
-  MainFont = NULL;
-  Running = true;
-  Pause = false;
 }
 
 Sim::Sim(const char * filename)
 {
   MAX_ROW = 600;
   MAX_COL = 800;
-
+  POPULATION = MAX_ROW * MAX_COL;
   infection_P = 0.1f;
   SAMPLE_RATE = 1;
+  die_P = 0.01f;
   heal_P = 0.0f;
   recovery_days = 15;
-  die_P = 0.01f;
   INITIAL_INFECTED = 100;
   DAYS = 100;
   IMMUNITY = 0.0f;
+  until_end = 0;
 
   DisplayInConsole = 0;
   CreatePNGSequence = 0;
   CreateMP4Video = 0;
-  until_end = 1;
 
   std::string line;
   std::ifstream data(filename);
@@ -191,23 +168,6 @@ Sim::Sim(const char * filename)
   {
     data_state[d]=new int[3];
   }
-
-  day = 0;
-  infections=0;
-  old_infections=0;
-  new_infected_today = 0;
-  deads=0;
-  immunes = 0;
-  max_infected = 0;
-  max_infected_day = 0;
-  total_cases = 0;
-  zero_infected_day = -1;
-  all_healthy = 0;
-
-  //RandomGen gen;
-  MainWindow = NULL;
-  MainRenderer = NULL;
-  Running = true;
 }
 
 bool Sim::infect(RandomGen& gen,double prob)
@@ -311,16 +271,8 @@ void Sim::display_results()
   std::cout<<"Dead: "<<deads<<'\n';
 }
 
-void Sim::save_texture(SDL_Texture *texture, const char *filename) {
-    SDL_Texture* target = SDL_GetRenderTarget(MainRenderer);
-    SDL_SetRenderTarget(MainRenderer, texture);
-    int width, height;
-    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
-    SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
-    SDL_RenderReadPixels(MainRenderer, NULL, surface->format->format, surface->pixels, surface->pitch);
+void Sim::Surface_to_PNG(SDL_Surface* surface, const char *filename) {
     IMG_SavePNG(surface, filename);
-    SDL_FreeSurface(surface);
-    SDL_SetRenderTarget(MainRenderer, target);
 }
 
 void Sim::CleanPNGs()

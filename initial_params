@@ -1,6 +1,6 @@
 # POPULATION will be MAX_ROW x MAX_COL
 MAX_COL 800
-MAX_ROW 600
+MAX_ROW 800
 
 # Infect probability
 infection_P   0.1

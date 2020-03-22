@@ -27,7 +27,8 @@ int Sim::OnExecute() {
           }
         }
     }
-
+    SimulationEnd = true;
+    Simulation_Current_Frame = DAYS-1;
     PrintReport();
 
     if(CreatePNGSequence && CreateMP4Video && Running)
@@ -36,6 +37,7 @@ int Sim::OnExecute() {
       RenderGif();
       //Running=0;
     }
+
 
     while(Running)
     {
