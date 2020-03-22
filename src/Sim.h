@@ -24,7 +24,7 @@ const SDL_Color RED = {0xFF, 0x00, 0x00};
 const SDL_Color BLUE = {0x00, 0x00, 0xFF};
 
 const int GRAPHW = 600;
-const int GRAPHH = 450;
+const int GRAPHH = 400;
 
 class Sim : public CEvent
 {
@@ -81,6 +81,7 @@ public:
   bool kill(RandomGen& gen, double prob);
 
   void save_texture(SDL_Texture *tex, const char *filename);
+  void CleanPNGs();
   void RenderMP4Video();
   void RenderGif();
   void PrintReport();

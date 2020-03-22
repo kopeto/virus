@@ -10,6 +10,8 @@ int Sim::OnExecute() {
       SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,"Program Initiated.\n");
     }
 
+    CleanPNGs();
+
     SDL_Event Event;
 
     for(day=1; (day<=DAYS || until_end) && Running; day++)
@@ -26,11 +28,13 @@ int Sim::OnExecute() {
         }
     }
 
+    PrintReport();
+
     if(CreatePNGSequence && CreateMP4Video && Running)
     {
       RenderMP4Video();
       RenderGif();
-      Running=0;
+      //Running=0;
     }
 
     while(Running)
@@ -39,8 +43,6 @@ int Sim::OnExecute() {
           OnEvent(&Event);
       }
     }
-
-    PrintReport();
 
     OnCleanup();
 

@@ -1,0 +1,35 @@
+# POPULATION will be MAX_ROW x MAX_COL
+MAX_COL 800
+MAX_ROW 600
+
+# Infect probability
+infection_P   0.1
+
+# Die probability if infected (each day)
+die_P   0.01
+
+# Initial people infected
+INITIAL_INFECTED   1000
+
+# Number of days simulated
+DAYS  150
+
+# Immunity percentage([0.0,1.0]) of population
+IMMUNITY 0.00
+
+# until_end not working yet
+until_end 0
+
+# A person will be recovered and immune if lasts those days
+# infected and alive
+recovery_days 30
+
+# not working yet
+heal_P 0.01
+
+# Neccesary for creating the gifs and mp4 videos
+CreatePNGSequence 1
+CreateMP4Video 1
+
+# Show live data in console during simulation
+DisplayInConsole 0

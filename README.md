@@ -40,7 +40,7 @@ make
 ## Run
 You can configure virus propagation parameters and pass the filepath as argument to the executable:
 ```bash
-./virus initial-values
+./virus initial-params
 ```
 Or simulate with default values:
 ```bash

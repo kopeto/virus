@@ -51,8 +51,19 @@ void Sim::OnKeyDown(SDL_Keycode sym, Uint16 mod, Uint16 unicode) {
           OnPause();
           break;
         }
+        case SDLK_p: {
+          OnPause();
+          break;
+        }
 
         case SDLK_q: {
+          SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+            "Exit.\n"
+          );
+          OnExit();
+          break;
+        }
+        case SDLK_ESCAPE: {
           SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
             "Exit.\n"
           );

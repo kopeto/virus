@@ -323,6 +323,11 @@ void Sim::save_texture(SDL_Texture *texture, const char *filename) {
     SDL_SetRenderTarget(MainRenderer, target);
 }
 
+void Sim::CleanPNGs()
+{
+  int ret = std::system("rm img/sequences/*.png");
+}
+
 void Sim::RenderMP4Video()
 {
   char create_mp4_command[256];
