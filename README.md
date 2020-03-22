@@ -1,8 +1,6 @@
 # virus spread naive simulation
 
-![GitHub Logo](/image.jpg)
-
-![GitHub Logo](/image_2.jpg)
+![Logo](logo.gif)
 
 ## Description
 Naive simulation of a virus spreading.
