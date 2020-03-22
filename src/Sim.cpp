@@ -331,14 +331,31 @@ void Sim::CleanPNGs()
 void Sim::RenderMP4Video()
 {
   char create_mp4_command[256];
-  sprintf(create_mp4_command,"ffmpeg -r 30 -i img/sequences/%%03d.png -c:v libx264 -vf \"fps=25,format=yuv420p\" -y video/out%ddays.mp4",DAYS);
+  char filename[64];
+  int count = 0;
+  do
+  {
+    sprintf(filename,"video/%d_days-POP_%d-InfP_%.2f-Immunes_%.2f_%03d.mp4",
+    DAYS,POPULATION,infection_P,IMMUNITY,count );
+    count++;
+  }while(boost::filesystem::exists(filename));
+
+  sprintf(create_mp4_command,"ffmpeg -r 30 -i img/sequences/%%03d.png -c:v libx264 -vf \"fps=25,format=yuv420p\" -y %s",filename);
   int ret = std::system(create_mp4_command);
 }
 
 void Sim::RenderGif()
 {
   char create_gif_command[256];
-  sprintf(create_gif_command,"ffmpeg -r 30 -i img/sequences/%%03d.png -vf \"fps=25,format=yuv420p\" -y video/out%ddays.gif",DAYS);
+  char filename[64];
+  int count = 0;
+  do
+  {
+    sprintf(filename,"video/%d_days-POP_%d-InfP_%.2f-Immunes_%.2f_%03d.gif",
+    DAYS,POPULATION,infection_P,IMMUNITY,count );
+    count++;
+  }while(boost::filesystem::exists(filename));
+  sprintf(create_gif_command,"ffmpeg -r 30 -i img/sequences/%%03d.png -vf \"fps=25,format=yuv420p\" -y %s",filename);
   int ret = std::system(create_gif_command);
 }
 

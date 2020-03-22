@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <random>       // std::default_random_engine
 #include <cstdlib>
+#include <boost/filesystem.hpp>
 
 #include "random_generator.h"
 #include "CEvent.h"

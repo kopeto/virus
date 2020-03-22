@@ -17,9 +17,9 @@ sudo apt-get update
 sudo apt-get install build-essential
 ```
 
-Install Boost-random:
+Install Boost:
 ```bash
-sudo apt-get install libboost-random-dev
+sudo apt-get install libboost-system-dev libboost-filesystem-dev libboost-random-dev
 ```
 
 Install SDL2:
