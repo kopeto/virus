@@ -106,6 +106,7 @@ public:
   void OnRender();
   void RenderInfo();
   void RenderGraph();
+  void RenderGraph2();
   void display_results();
   void OnCleanup();
   int OnExecute();

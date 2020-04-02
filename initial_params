@@ -1,6 +1,6 @@
 # POPULATION will be MAX_ROW x MAX_COL
-MAX_COL 800
-MAX_ROW 800
+MAX_COL 1080
+MAX_ROW 720
 
 # Infect probability
 infection_P   0.1
@@ -9,16 +9,16 @@ infection_P   0.1
 die_P   0.01
 
 # Initial people infected
-INITIAL_INFECTED   1000
+INITIAL_INFECTED   10000
 
 # Number of days simulated
-DAYS  150
+DAYS  1000
 
 # Immunity percentage([0.0,1.0]) of population
-IMMUNITY 0.00
+IMMUNITY 0.5
 
 # until_end not working yet
-until_end 0
+until_end 1
 
 # A person will be recovered and immune if lasts those days
 # infected and alive

@@ -26,7 +26,7 @@ void Sim::OnKeyDown(SDL_Keycode sym, Uint16 mod, Uint16 unicode) {
         case SDLK_LEFT: {
           if(SimulationEnd)
           {
-            Simulation_Current_Frame--;
+            Simulation_Current_Frame-=5;
             if(Simulation_Current_Frame<0)
               Simulation_Current_Frame=0;
             RenderDay();
@@ -36,7 +36,7 @@ void Sim::OnKeyDown(SDL_Keycode sym, Uint16 mod, Uint16 unicode) {
         case SDLK_RIGHT: {
           if(SimulationEnd)
           {
-            Simulation_Current_Frame++;
+            Simulation_Current_Frame+=5;
             if(Simulation_Current_Frame>DAYS-1)
               Simulation_Current_Frame = DAYS-1;
             RenderDay();

@@ -23,7 +23,7 @@ void Sim::OnRender() {
   }
 
   RenderInfo();
-  RenderGraph();
+  RenderGraph2();
   SDL_RenderPresent(MainRenderer);
 
   if(CreatePNGSequence)
@@ -187,6 +187,79 @@ void Sim::RenderGraph()
   SDL_SetRenderDrawColor(MainRenderer,0xFF,0,0,0);
   SDL_Rect GRAPH_DELIMITER{MAX_COL,MAX_ROW-GRAPHH,GRAPHW,GRAPHH};
   SDL_RenderDrawRect(MainRenderer,&GRAPH_DELIMITER);
+
+}
+
+void Sim::RenderGraph2()
+{
+  // Clean graph
+  SDL_Rect graphRect{
+    MAX_COL+1,
+    MAX_ROW-GRAPHH+1,
+    GRAPHW-2,
+    GRAPHH-2
+  };
+
+  SDL_SetRenderDrawColor(MainRenderer, RENDER_COLOR_BLACK);
+  SDL_RenderFillRect(MainRenderer,&graphRect);
+
+  for(int i = 0; i<=day; ++i)
+  {
+    // DEADS
+    //
+    SDL_Rect rect_dead{
+      MAX_COL+1 + (int)((double)(GRAPHW*i/(day+1))),//x
+      MAX_ROW-(int)((double)data_state[i][2]/POPULATION*GRAPHH),//y
+      (int)(GRAPHW/(day+1)),//w
+      (int)((double)data_state[i][2]/POPULATION*GRAPHH) -1//h
+    };
+
+    // INFECTIONS
+    //
+    SDL_Rect rect_infected{
+      MAX_COL+1 + (int)((double)(GRAPHW*i/(day+1))),//x
+      MAX_ROW-(int)((double)data_state[i][0]/POPULATION*GRAPHH),//y
+      (int)(GRAPHW/(day+1)),//w
+      (int)((double)data_state[i][0]/POPULATION*GRAPHH)-1//h
+    };
+
+    if(GRAPHW/(day+1))
+    {
+      rect_infected.w++;
+      rect_dead.w++;
+    }
+
+    rect_infected.y -= rect_dead.h;
+
+    // IMMUNES
+    //
+    // SDL_Rect rect_immune{
+      //     MAX_COL+(int)((double)day/DAYS*GRAPHW),//x
+      //     MAX_ROW-(int)((double)immunes/POPULATION*GRAPHH),//y
+      //     (int)(GRAPHW/DAYS)+1,//w
+      //     (int)((double)immunes/POPULATION*GRAPHH) -1//h
+      //   };
+      // SDL_Rect rect_new_infected{
+      //   MAX_COL+1 + (int)((double)i/day*GRAPHW*i),//x
+      //   MAX_ROW-(int)((double)new_infected_today/POPULATION*GRAPHH*10),//y
+      //   3,//w
+      //   3//h
+      // };
+
+      SDL_SetRenderDrawColor(MainRenderer,0xFF, 0xA7, 0x00, 0x00);
+      SDL_RenderFillRect(MainRenderer,&rect_infected);
+      SDL_SetRenderDrawColor(MainRenderer,0xFF, 0x00, 0x00, 0x00);
+      SDL_RenderFillRect(MainRenderer,&rect_dead);
+      // SDL_SetRenderDrawColor(MainRenderer,0x00, 0x00, 0xFF, 0x00);
+      // SDL_RenderFillRect(MainRenderer,&rect_new_infected);
+      //SDL_RenderDrawPoint(MainRenderer,point_new_infected.x,point_new_infected.y);
+
+      // GRAPH DELIMITER
+      SDL_SetRenderDrawColor(MainRenderer,0xFF,0,0,0);
+      SDL_Rect GRAPH_DELIMITER{MAX_COL,MAX_ROW-GRAPHH,GRAPHW,GRAPHH};
+      SDL_RenderDrawRect(MainRenderer,&GRAPH_DELIMITER);
+
+  }
 
 }
 

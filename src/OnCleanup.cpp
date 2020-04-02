@@ -11,6 +11,11 @@ void Sim::OnCleanup() {
   delete[] data_state;
   delete[] days_infected;
 
+  for(auto p_Texture: Texture_Vector)
+  {
+    SDL_DestroyTexture(p_Texture);
+  }
+
   if(MainRenderer)
   SDL_DestroyRenderer(MainRenderer);
   if(MainWindow)
